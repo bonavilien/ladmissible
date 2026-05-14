@@ -13,16 +13,35 @@ const { title } = Astro.props;
 
 <style>
   .editorial-block {
-    border-left: 4px solid var(--accent);
+    position: relative;
+    border: 2px solid var(--ink);
+    border-radius: 16px 12px 20px 14px / 12px 20px 14px 18px;
     margin-block: 24px;
-    padding: 14px 0 14px 16px;
-    background: color-mix(in oklch, var(--surface) 70%, transparent);
+    padding: 16px;
+    background:
+      linear-gradient(105deg, color-mix(in oklch, var(--marker) 55%, transparent) 0 42%, transparent 42%),
+      var(--paper);
+    box-shadow: 5px 5px 0 var(--shadow);
+    transform: rotate(-0.4deg);
+  }
+
+  .editorial-block::before {
+    content: "";
+    position: absolute;
+    top: -11px;
+    right: 20px;
+    width: 72px;
+    height: 18px;
+    border: 1px solid color-mix(in oklch, var(--ink) 35%, transparent);
+    background: color-mix(in oklch, var(--marker) 72%, var(--paper));
+    transform: rotate(3deg);
   }
 
   h2 {
     margin: 0 0 8px;
     color: var(--ink);
-    font-size: 1rem;
+    font-size: 1.05rem;
+    font-weight: 900;
   }
 
   :global(.editorial-block p) {

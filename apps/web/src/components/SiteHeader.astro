@@ -4,10 +4,12 @@ import { categories } from '../data/categories';
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="Accueil L'Admissible">L'Admissible</a>
+    <a class="brand" href="/" aria-label="Accueil L'Admissible">
+      <span>L'Admissible</span>
+    </a>
     <nav class="nav" aria-label="Navigation principale">
       <a href="/articles/">Articles</a>
-      {categories.slice(0, 5).map((category) => (
+      {categories.map((category) => (
         <a href={`/categories/${category.slug}/`}>{category.name}</a>
       ))}
       <a href="/a-propos/">A propos</a>
@@ -20,39 +22,70 @@ import { categories } from '../data/categories';
     position: sticky;
     top: 0;
     z-index: 10;
-    border-bottom: 1px solid var(--line);
-    background: color-mix(in oklch, var(--bg) 92%, transparent);
-    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper);
   }
 
   .header-inner {
     display: grid;
     gap: 12px;
-    padding-block: 14px;
+    padding-block: 12px;
   }
 
   .brand {
+    position: relative;
     width: fit-content;
     color: var(--ink);
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.45rem;
-    font-weight: 800;
+    font-size: clamp(1.45rem, 6vw, 2rem);
+    font-weight: 900;
     line-height: 1;
     text-decoration: none;
   }
 
+  .brand span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand::after {
+    content: "";
+    position: absolute;
+    left: -4px;
+    right: -8px;
+    bottom: -3px;
+    z-index: 0;
+    height: 12px;
+    background: var(--marker);
+    transform: rotate(-1.5deg);
+  }
+
   .nav {
     display: flex;
-    gap: 10px 16px;
+    gap: 8px;
     overflow-x: auto;
-    padding-bottom: 2px;
-    color: var(--muted);
+    padding: 3px 2px 6px;
+    color: var(--ink);
     font-size: 0.92rem;
+    font-weight: 800;
     white-space: nowrap;
+    scrollbar-width: none;
   }
 
   .nav a {
+    border: 1px solid color-mix(in oklch, var(--ink) 55%, transparent);
+    border-radius: 999px 860px 930px 780px / 780px 999px 790px 940px;
+    padding: 7px 10px;
+    background: color-mix(in oklch, var(--paper) 70%, var(--marker));
     text-decoration: none;
+  }
+
+  .nav a:nth-child(odd) {
+    transform: rotate(-0.8deg);
+  }
+
+  .nav a:nth-child(even) {
+    transform: rotate(0.7deg);
   }
 
   @media (min-width: 860px) {

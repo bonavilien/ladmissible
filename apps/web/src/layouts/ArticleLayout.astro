@@ -33,14 +33,17 @@ const breadcrumbs = [
     <div class="container">
       <Breadcrumbs items={breadcrumbs} />
       <header class="article-header">
-        {category && <p class="eyebrow">{category.name}</p>}
+        <div class="article-kicker">
+          {category && <p class="eyebrow">{category.name}</p>}
+          <span>copie annotee</span>
+        </div>
         <h1 class="article-title">{article.data.title}</h1>
         <p class="lede">{article.data.description}</p>
         <p class="meta">
-          Par {article.data.author} · Publie le {formatDate(article.data.publishDate)}
+          Par {article.data.author} / Publie le {formatDate(article.data.publishDate)}
           {
             article.data.updatedDate &&
-              ` · Mis a jour le ${formatDate(article.data.updatedDate)}`
+              ` / Mis a jour le ${formatDate(article.data.updatedDate)}`
           }
         </p>
       </header>
@@ -82,9 +85,34 @@ const breadcrumbs = [
   }
 
   .article-header {
+    position: relative;
     max-width: 920px;
     padding-block: clamp(28px, 6vw, 72px);
-    border-bottom: 1px solid var(--line);
+    border-bottom: 3px solid var(--ink);
+  }
+
+  .article-header::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -8px;
+    width: min(260px, 55vw);
+    height: 14px;
+    background: var(--marker);
+    transform: rotate(-1.5deg);
+  }
+
+  .article-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .article-kicker span {
+    color: var(--blue-pen);
+    font-weight: 900;
+    transform: rotate(1.5deg);
   }
 
   .article-image {
@@ -111,8 +139,11 @@ const breadcrumbs = [
 
   .sources {
     max-width: 760px;
-    border-top: 1px solid var(--line);
-    padding-top: 20px;
+    border: 2px solid var(--ink);
+    border-radius: 16px 12px 18px 14px / 12px 18px 14px 16px;
+    padding: 18px;
+    background: var(--surface);
+    box-shadow: 5px 5px 0 var(--shadow);
   }
 
   .sources h2 {

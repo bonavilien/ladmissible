@@ -24,6 +24,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
         <p class="lede">
           Actualites, guides et classements pour comprendre les ecoles de commerce sans se faire endormir par trois acronymes et une photo de campus.
         </p>
+        <p class="scribble-note">A lire avant de cocher une case trop vite.</p>
       </div>
       {
         featuredArticle && (
@@ -44,6 +45,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
       <div class="category-grid">
         {categories.map((category) => (
           <a class="category-link" href={`/categories/${category.slug}/`}>
+            <span class="category-mark" aria-hidden="true">#</span>
             <strong>{category.name}</strong>
             <span>{category.description}</span>
           </a>
@@ -80,7 +82,22 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
 
 <style>
   .home-hero {
+    position: relative;
     padding-top: clamp(36px, 8vw, 88px);
+  }
+
+  .home-hero::after {
+    content: "anti-brochure";
+    position: absolute;
+    right: max(16px, calc((100vw - var(--max)) / 2));
+    bottom: 12px;
+    display: none;
+    border: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--accent-dark);
+    font-weight: 900;
+    transform: rotate(7deg);
   }
 
   .hero-grid {
@@ -92,14 +109,38 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
     align-self: end;
   }
 
+  .scribble-note {
+    width: fit-content;
+    margin: 22px 0 0;
+    border: 2px dashed var(--blue-pen);
+    border-radius: 12px 18px 14px 20px / 18px 12px 20px 14px;
+    padding: 8px 12px;
+    color: var(--blue-pen);
+    font-weight: 800;
+    transform: rotate(-1.2deg);
+  }
+
   .surface-band {
-    background: var(--surface);
-    border-block: 1px solid var(--line);
+    background:
+      linear-gradient(135deg, color-mix(in oklch, var(--marker) 40%, transparent), transparent 42%),
+      var(--surface);
+    border-block: 2px solid var(--ink);
   }
 
   .section-head {
+    position: relative;
     max-width: 760px;
     margin-bottom: 24px;
+  }
+
+  .section-head::after {
+    content: "";
+    display: block;
+    width: min(220px, 58vw);
+    height: 10px;
+    margin-top: 12px;
+    background: var(--marker);
+    transform: rotate(-1deg);
   }
 
   .section-head h2 {
@@ -123,22 +164,43 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
 
   .category-grid {
     display: grid;
-    gap: 14px;
+    gap: 18px;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
   .category-link {
+    position: relative;
     display: grid;
     gap: 8px;
-    border-top: 2px solid var(--ink);
-    padding-top: 14px;
+    border: 2px solid var(--ink);
+    border-radius: 14px 20px 12px 18px / 18px 12px 20px 14px;
+    padding: 14px;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--shadow);
     text-decoration: none;
+    transform: rotate(-0.5deg);
+  }
+
+  .category-link:nth-child(even) {
+    transform: rotate(0.6deg);
+  }
+
+  .category-mark {
+    position: absolute;
+    right: 12px;
+    top: 6px;
+    color: var(--accent);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
   }
 
   .category-link strong {
     color: var(--ink);
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.35rem;
+    line-height: 1.05;
   }
 
   .category-link span {
@@ -150,13 +212,22 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
   }
 
   @media (min-width: 860px) {
+    .home-hero::after {
+      display: block;
+    }
+
     .hero-grid {
-      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.45fr);
+      align-items: end;
     }
 
     .section-head.row {
       grid-template-columns: 1fr auto;
       align-items: end;
+    }
+
+    .article-grid {
+      grid-template-columns: 1.15fr 0.85fr 1fr;
     }
   }
 </style>

@@ -31,7 +31,7 @@ const breadcrumbs = [
     <div class="container">
       <Breadcrumbs items={breadcrumbs} />
       <header class="category-header">
-        <p class="eyebrow">Categorie</p>
+        <p class="eyebrow">Dossier de redaction</p>
         <h1 class="page-title">{category.name}</h1>
         <p class="lede">{category.description}</p>
       </header>
@@ -50,7 +50,30 @@ const breadcrumbs = [
 
 <style>
   .category-header {
-    margin: 28px 0 clamp(28px, 6vw, 56px);
+    position: relative;
+    margin: 28px 0 clamp(32px, 6vw, 64px);
+    border: 2px solid var(--ink);
+    border-radius: 22px 14px 18px 16px / 14px 20px 12px 22px;
+    padding: clamp(18px, 4vw, 34px);
+    background:
+      linear-gradient(105deg, transparent 0 58%, color-mix(in oklch, var(--marker) 52%, transparent) 58% 100%),
+      var(--paper);
+    box-shadow: 7px 7px 0 var(--shadow);
+    transform: rotate(-0.3deg);
+  }
+
+  .category-header::before {
+    content: "rubrique";
+    position: absolute;
+    right: 18px;
+    top: -18px;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 4px 8px;
+    background: var(--paper);
+    color: var(--accent-dark);
+    font-weight: 900;
+    transform: rotate(5deg);
   }
 
   .empty {

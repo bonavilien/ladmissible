@@ -8,30 +8,74 @@ type Props = {
 
 const { article, featured = false } = Astro.props;
 const category = getArticleCategory(article);
+const typeLabels = {
+  article: 'Article',
+  news: 'Actu',
+  guide: 'Guide',
+  analysis: 'Analyse',
+};
 ---
 
 <article class:list={['article-card', { featured }]}>
-  {category && <a class="card-category" href={`/categories/${category.slug}/`}>{category.name}</a>}
+  <div class="card-topline">
+    {category && <a class="card-category" href={`/categories/${category.slug}/`}>{category.name}</a>}
+    <span>{typeLabels[article.data.type]}</span>
+  </div>
   <h2><a href={getArticleUrl(article)}>{article.data.title}</a></h2>
   <p>{article.data.description}</p>
   <footer class="meta">
     <span>{formatDate(article.data.publishDate)}</span>
-    <span>{article.data.type === 'news' ? 'Actu' : article.data.type}</span>
   </footer>
 </article>
 
 <style>
   .article-card {
+    position: relative;
     display: grid;
     align-content: start;
-    gap: 12px;
+    gap: 14px;
     min-height: 100%;
-    border-top: 3px solid var(--ink);
-    padding: 18px 0 0;
+    border: 2px solid var(--ink);
+    border-radius: 18px 12px 20px 14px / 14px 20px 12px 18px;
+    padding: 16px;
+    background: var(--paper);
+    box-shadow: 5px 5px 0 var(--shadow);
+    transform: rotate(-0.4deg);
   }
 
   .article-card.featured {
-    border-top-color: var(--accent);
+    background:
+      linear-gradient(110deg, transparent 0 68%, color-mix(in oklch, var(--marker) 70%, transparent) 68% 100%),
+      var(--paper);
+    box-shadow: 7px 7px 0 var(--accent);
+    transform: rotate(0.8deg);
+  }
+
+  .article-card:nth-child(3n) {
+    transform: rotate(0.5deg);
+  }
+
+  .article-card::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 22px;
+    width: 68px;
+    height: 18px;
+    border: 1px solid color-mix(in oklch, var(--ink) 30%, transparent);
+    background: color-mix(in oklch, var(--marker) 65%, var(--paper));
+    transform: rotate(-3deg);
+  }
+
+  .card-topline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 800;
   }
 
   .card-category {
@@ -46,8 +90,9 @@ const category = getArticleCategory(article);
     margin: 0;
     color: var(--ink);
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: clamp(1.45rem, 4vw, 2.35rem);
-    line-height: 1.06;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    line-height: 1.02;
+    text-wrap: balance;
   }
 
   h2 a {
@@ -57,6 +102,7 @@ const category = getArticleCategory(article);
   p {
     margin: 0;
     color: var(--muted);
+    text-wrap: pretty;
   }
 
   footer {
