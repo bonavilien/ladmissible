@@ -1,0 +1,62 @@
+---
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { buildSeo } from '../lib/seo';
+import { site } from '../lib/site';
+
+type Props = {
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  jsonLd?: Array<Record<string, unknown>>;
+};
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  image,
+  type = 'website',
+  jsonLd = [],
+} = Astro.props;
+
+const seo = buildSeo({ title, description, path, image, type });
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <link rel="canonical" href={seo.canonical} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:type" content={seo.type} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:url" content={seo.canonical} />
+    {seo.image && <meta property="og:image" content={seo.image} />}
+    <meta name="twitter:card" content={seo.image ? 'summary_large_image' : 'summary'} />
+    {
+      jsonLd.map((item) => (
+        <script type="application/ld+json" set:html={JSON.stringify(item)} />
+      ))
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <SiteHeader />
+    <main id="contenu">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

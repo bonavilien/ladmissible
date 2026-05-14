@@ -1,0 +1,68 @@
+---
+import { categories } from '../data/categories';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Accueil L'Admissible">L'Admissible</a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="/articles/">Articles</a>
+      {categories.slice(0, 5).map((category) => (
+        <a href={`/categories/${category.slug}/`}>{category.name}</a>
+      ))}
+      <a href="/a-propos/">A propos</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in oklch, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .header-inner {
+    display: grid;
+    gap: 12px;
+    padding-block: 14px;
+  }
+
+  .brand {
+    width: fit-content;
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .nav {
+    display: flex;
+    gap: 10px 16px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    white-space: nowrap;
+  }
+
+  .nav a {
+    text-decoration: none;
+  }
+
+  @media (min-width: 860px) {
+    .header-inner {
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
+
+    .nav {
+      justify-content: end;
+    }
+  }
+</style>

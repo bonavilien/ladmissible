@@ -1,0 +1,61 @@
+---
+import { categories } from '../data/categories';
+import { site } from '../lib/site';
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-brand">{site.name}</p>
+      <p class="footer-copy">
+        Le media qui lit les brochures d'ecoles pour que vous n'ayez pas a tout avaler sans filtre.
+      </p>
+    </div>
+    <nav class="footer-nav" aria-label="Categories">
+      {categories.map((category) => (
+        <a href={`/categories/${category.slug}/`}>{category.name}</a>
+      ))}
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 32px;
+    background: var(--surface);
+  }
+
+  .footer-inner {
+    display: grid;
+    gap: 24px;
+  }
+
+  .footer-brand {
+    margin: 0 0 6px;
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .footer-copy {
+    max-width: 520px;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    font-size: 0.94rem;
+  }
+
+  @media (min-width: 760px) {
+    .footer-inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+</style>

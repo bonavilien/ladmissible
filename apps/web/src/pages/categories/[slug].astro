@@ -1,0 +1,60 @@
+---
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categories } from '../../data/categories';
+import { getArticlesByCategory } from '../../lib/content';
+import { buildBreadcrumbJsonLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const articles = await getArticlesByCategory(category.slug);
+const breadcrumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: category.name, path: `/categories/${category.slug}/` },
+];
+---
+
+<BaseLayout
+  title={category.name}
+  description={category.description}
+  path={`/categories/${category.slug}/`}
+  jsonLd={[buildBreadcrumbJsonLd(breadcrumbs)]}
+>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs items={breadcrumbs} />
+      <header class="category-header">
+        <p class="eyebrow">Categorie</p>
+        <h1 class="page-title">{category.name}</h1>
+        <p class="lede">{category.description}</p>
+      </header>
+      {
+        articles.length > 0 ? (
+          <div class="grid article-grid">
+            {articles.map((article) => <ArticleCard article={article} />)}
+          </div>
+        ) : (
+          <p class="empty">Rien a lire ici pour l'instant. Le silence, mais version SEO propre.</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .category-header {
+    margin: 28px 0 clamp(28px, 6vw, 56px);
+  }
+
+  .empty {
+    max-width: 680px;
+    color: var(--muted);
+  }
+</style>

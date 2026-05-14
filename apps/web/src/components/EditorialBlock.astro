@@ -1,0 +1,31 @@
+---
+type Props = {
+  title: 'A retenir' | 'Dates cles' | 'Chiffres';
+};
+
+const { title } = Astro.props;
+---
+
+<aside class="editorial-block">
+  <h2>{title}</h2>
+  <slot />
+</aside>
+
+<style>
+  .editorial-block {
+    border-left: 4px solid var(--accent);
+    margin-block: 24px;
+    padding: 14px 0 14px 16px;
+    background: color-mix(in oklch, var(--surface) 70%, transparent);
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+
+  :global(.editorial-block p) {
+    margin: 0;
+  }
+</style>

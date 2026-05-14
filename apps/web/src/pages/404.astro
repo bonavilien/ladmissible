@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page introuvable"
+  description="Cette page n'existe pas ou plus. Meme les meilleurs calendriers ont parfois une salle mal indiquee."
+  path="/404/"
+>
+  <section class="section">
+    <div class="container not-found">
+      <p class="eyebrow">404</p>
+      <h1 class="page-title">Cette page a seche l'oral.</h1>
+      <p class="lede">
+        L'adresse ne mene a rien. Retournez aux articles, c'est plus utile qu'attendre devant une porte fermee.
+      </p>
+      <a class="button-link" href="/articles/">Voir les articles</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: 50vh;
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import EditorialBlock from '../components/EditorialBlock.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="A propos"
+  description="L'Admissible explique les ecoles de commerce, les admissions et les classements avec des faits solides et un angle qui tient debout."
+  path="/a-propos/"
+>
+  <section class="section">
+    <div class="container about-grid">
+      <header>
+        <p class="eyebrow">A propos</p>
+        <h1 class="page-title">Un media pour lire entre les lignes.</h1>
+      </header>
+      <div class="prose">
+        <p>
+          L'Admissible couvre les ecoles de commerce, les admissions, les classements, Parcoursup, les concours et la vie etudiante avec une idee simple: rendre les informations utiles avant qu'elles ne deviennent un labyrinthe.
+        </p>
+        <p>
+          Le ton est journalistique, direct et parfois piquant. Les faits passent d'abord. Les blagues attendent leur tour, comme tout le monde.
+        </p>
+        <EditorialBlock title="A retenir">
+          <p>
+            Nous ne sommes ni une ecole, ni une brochure, ni un stand de salon. Le but est d'aider les lecteurs a comprendre, comparer et choisir avec un peu plus de recul.
+          </p>
+        </EditorialBlock>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: clamp(28px, 6vw, 72px);
+  }
+
+  @media (min-width: 900px) {
+    .about-grid {
+      grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.65fr);
+      align-items: start;
+    }
+  }
+</style>

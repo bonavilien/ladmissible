@@ -1,17 +1,162 @@
 ---
+import ArticleCard from '../components/ArticleCard.astro';
+import EditorialBlock from '../components/EditorialBlock.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categories } from '../data/categories';
+import { getFeaturedArticle, getPublishedArticles } from '../lib/content';
+import { site } from '../lib/site';
 
+const articles = await getPublishedArticles();
+const featuredArticle = await getFeaturedArticle();
+const latestArticles = articles.filter((article) => article.id !== featuredArticle?.id).slice(0, 6);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Ecoles de commerce, admissions et classements"
+  description={site.description}
+  path="/"
+>
+  <section class="home-hero section">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Media ecoles de commerce</p>
+        <h1 class="hero-title">Les admissions, sans la brume de plaquette.</h1>
+        <p class="lede">
+          Actualites, guides et classements pour comprendre les ecoles de commerce sans se faire endormir par trois acronymes et une photo de campus.
+        </p>
+      </div>
+      {
+        featuredArticle && (
+          <div class="hero-feature">
+            <ArticleCard article={featuredArticle} featured />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section surface-band" aria-labelledby="categories-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="categories-title">Entrer par le bon sujet</h2>
+        <p>Pas besoin de subir toute la carte du restaurant quand vous cherchez juste les dates d'oral.</p>
+      </div>
+      <div class="category-grid">
+        {categories.map((category) => (
+          <a class="category-link" href={`/categories/${category.slug}/`}>
+            <strong>{category.name}</strong>
+            <span>{category.description}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="latest-title">
+    <div class="container">
+      <div class="section-head row">
+        <div>
+          <h2 id="latest-title">Derniers articles</h2>
+          <p>Du concret, du lisible, et juste assez de recul pour ne pas applaudir une annonce par reflexe.</p>
+        </div>
+        <a class="button-link" href="/articles/">Tous les articles</a>
+      </div>
+      <div class="grid article-grid">
+        {latestArticles.map((article) => <ArticleCard article={article} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section closing-band">
+    <div class="container">
+      <EditorialBlock title="A retenir">
+        <p>
+          Le MVP doit rester rapide, statique et editorial. Le CMS viendra plus tard; pour l'instant, le contenu structure fait tres bien le travail.
+        </p>
+      </EditorialBlock>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    padding-top: clamp(36px, 8vw, 88px);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: clamp(28px, 6vw, 72px);
+  }
+
+  .hero-feature {
+    align-self: end;
+  }
+
+  .surface-band {
+    background: var(--surface);
+    border-block: 1px solid var(--line);
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 24px;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.8rem, 5vw, 3.4rem);
+    line-height: 1.05;
+  }
+
+  .section-head p {
+    margin: 10px 0 0;
+    color: var(--muted);
+  }
+
+  .section-head.row {
+    display: grid;
+    gap: 18px;
+    max-width: none;
+  }
+
+  .category-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .category-link {
+    display: grid;
+    gap: 8px;
+    border-top: 2px solid var(--ink);
+    padding-top: 14px;
+    text-decoration: none;
+  }
+
+  .category-link strong {
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.35rem;
+  }
+
+  .category-link span {
+    color: var(--muted);
+  }
+
+  .closing-band {
+    padding-top: 0;
+  }
+
+  @media (min-width: 860px) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+    }
+
+    .section-head.row {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+  }
+</style>

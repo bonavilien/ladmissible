@@ -1,0 +1,34 @@
+---
+import ArticleCard from '../../components/ArticleCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedArticles } from '../../lib/content';
+
+const articles = await getPublishedArticles();
+---
+
+<BaseLayout
+  title="Articles"
+  description="Tous les articles de L'Admissible sur les ecoles de commerce, les admissions, les classements, Parcoursup et les concours."
+  path="/articles/"
+>
+  <section class="section">
+    <div class="container">
+      <header class="list-header">
+        <p class="eyebrow">Articles</p>
+        <h1 class="page-title">Tout lire, mais dans le bon ordre.</h1>
+        <p class="lede">
+          Les dernieres analyses et guides pour suivre les ecoles de commerce sans se perdre dans le decor.
+        </p>
+      </header>
+      <div class="grid article-grid">
+        {articles.map((article) => <ArticleCard article={article} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .list-header {
+    margin-bottom: clamp(28px, 6vw, 56px);
+  }
+</style>
