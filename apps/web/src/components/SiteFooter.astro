@@ -11,7 +11,11 @@ import { site } from '../lib/site';
         Le media qui lit les brochures d'ecoles pour que vous n'ayez pas a tout avaler sans filtre.
       </p>
     </div>
-    <nav class="footer-nav" aria-label="Categories">
+    <nav class="footer-nav" aria-label="Navigation secondaire">
+      <a href="/articles/">Articles</a>
+      <a href="/categories/">Categories</a>
+      <a href="/tags/">Tags</a>
+      <a href="/a-propos/">A propos</a>
       {categories.map((category) => (
         <a href={`/categories/${category.slug}/`}>{category.name}</a>
       ))}

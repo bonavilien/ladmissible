@@ -1,9 +1,11 @@
 ---
 import ArticleCard from '../../components/ArticleCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedArticles } from '../../lib/content';
+import { categories } from '../../data/categories';
+import { getAllTags, getPublishedArticles } from '../../lib/content';
 
 const articles = await getPublishedArticles();
+const tags = getAllTags(articles).slice(0, 12);
 ---
 
 <BaseLayout
@@ -20,6 +22,32 @@ const articles = await getPublishedArticles();
           Les dernieres analyses et guides pour suivre les ecoles de commerce sans se perdre dans le decor.
         </p>
       </header>
+      <nav class="article-filters" aria-label="Filtres articles">
+        <div>
+          <p class="filter-label">Categories</p>
+          <div class="filter-list">
+            {categories.map((category) => (
+              <a class="category-tag" href={`/categories/${category.slug}/`}>{category.name}</a>
+            ))}
+          </div>
+        </div>
+        {
+          tags.length > 0 && (
+            <div>
+              <p class="filter-label">Tags frequents</p>
+              <div class="filter-list">
+                {tags.map((tag) => (
+                  <a class="tag-link" href={`/tags/${tag.slug}/`}>
+                    #{tag.name}
+                    <span>{tag.count}</span>
+                  </a>
+                ))}
+                <a class="button-secondary" href="/tags/">Tous les tags</a>
+              </div>
+            </div>
+          )
+        }
+      </nav>
       <div class="grid article-grid">
         {articles.map((article) => <ArticleCard article={article} />)}
       </div>
@@ -30,5 +58,43 @@ const articles = await getPublishedArticles();
 <style>
   .list-header {
     margin-bottom: clamp(28px, 6vw, 56px);
+  }
+
+  .article-filters {
+    display: grid;
+    gap: 16px;
+    margin-bottom: clamp(28px, 5vw, 48px);
+  }
+
+  .filter-label {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag-link {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    border: 1px dashed var(--blue-pen);
+    border-radius: var(--radius-pill);
+    padding: 5px 10px;
+    color: var(--blue-pen);
+    font-size: 0.9rem;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .tag-link span {
+    color: var(--muted);
+    font-size: 0.78rem;
   }
 </style>

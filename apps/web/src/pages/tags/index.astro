@@ -1,0 +1,85 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllTags, getPublishedArticles } from '../../lib/content';
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+
+const articles = await getPublishedArticles();
+const tags = getAllTags(articles);
+const breadcrumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Articles', path: '/articles/' },
+  { name: 'Tags', path: '/tags/' },
+];
+---
+
+<BaseLayout
+  title="Tags"
+  description="Tous les tags de L'Admissible pour retrouver les articles par sujet: admissions, concours, Parcoursup, classements et ecoles."
+  path="/tags/"
+  jsonLd={[
+    buildCollectionPageJsonLd({
+      title: 'Tags',
+      description: "Tous les tags de L'Admissible pour naviguer par sujet.",
+      path: '/tags/',
+    }),
+    buildBreadcrumbJsonLd(breadcrumbs),
+  ]}
+>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs items={breadcrumbs} />
+      <header class="tags-header">
+        <p class="eyebrow">Index</p>
+        <h1 class="page-title">Tous les tags, sans tiroir mysterieux.</h1>
+        <p class="lede">
+          Pour retrouver un sujet vite, sans fouiller dans toute la pile de copies.
+        </p>
+      </header>
+      <div class="tag-cloud" aria-label="Tous les tags">
+        {tags.map((tag) => (
+          <a class="tag-link" href={`/tags/${tag.slug}/`}>
+            #{tag.name}
+            <span>{tag.count}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tags-header {
+    margin: 28px 0 clamp(28px, 6vw, 56px);
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 860px;
+  }
+
+  .tag-link {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    border: 1px dashed var(--blue-pen);
+    border-radius: var(--radius-pill);
+    padding: 7px 11px;
+    background: var(--paper);
+    color: var(--blue-pen);
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .tag-link:hover {
+    background: color-mix(in oklch, var(--blue-pen) 10%, var(--paper));
+    color: var(--ink);
+  }
+
+  .tag-link span {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+</style>

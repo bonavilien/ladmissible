@@ -3,12 +3,26 @@ import ArticleCard from '../components/ArticleCard.astro';
 import EditorialBlock from '../components/EditorialBlock.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categories } from '../data/categories';
-import { getFeaturedArticle, getPublishedArticles } from '../lib/content';
+import {
+  formatDate,
+  getArticleCategory,
+  getArticleUrl,
+  getFeaturedArticle,
+  getPublishedArticles,
+} from '../lib/content';
 import { site } from '../lib/site';
 
 const articles = await getPublishedArticles();
 const featuredArticle = await getFeaturedArticle();
 const latestArticles = articles.filter((article) => article.id !== featuredArticle?.id).slice(0, 6);
+const featuredCategory = featuredArticle ? getArticleCategory(featuredArticle) : undefined;
+const featuredUrl = featuredArticle ? getArticleUrl(featuredArticle) : '';
+const typeLabels = {
+  article: 'Article',
+  news: 'Actu',
+  guide: 'Guide',
+  analysis: 'Analyse',
+};
 ---
 
 <BaseLayout
@@ -16,11 +30,16 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
   description={site.description}
   path="/"
 >
+
   <section class="home-hero section">
     <div class="container hero-grid">
       <div>
         <p class="eyebrow">Media ecoles de commerce</p>
-        <h1 class="hero-title">Les admissions, sans la brume de plaquette.</h1>
+        <h1 class="hero-title">
+          <span>Les</span>
+          <span>admissions,</span>
+          <span>sans la brume de plaquette.</span>
+        </h1>
         <p class="lede">
           Actualites, guides et classements pour comprendre les ecoles de commerce sans se faire endormir par trois acronymes et une photo de campus.
         </p>
@@ -29,12 +48,43 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
       {
         featuredArticle && (
           <div class="hero-feature">
-            <ArticleCard article={featuredArticle} featured />
+            <article class="hero-card">
+              <a class="hero-card-visual" href={featuredUrl} aria-label={`Lire ${featuredArticle.data.title}`}>
+                {
+                  featuredArticle.data.image ? (
+                    <img
+                      src={featuredArticle.data.image}
+                      alt={featuredArticle.data.imageAlt ?? featuredArticle.data.title}
+                    />
+                  ) : (
+                    <span>Photo article</span>
+                  )
+                }
+              </a>
+              <div class="hero-card-body">
+                <div class="card-topline">
+                  {
+                    featuredCategory && (
+                      <a class="category-tag" href={`/categories/${featuredCategory.slug}/`}>
+                        {featuredCategory.name}
+                      </a>
+                    )
+                  }
+                  <span>{typeLabels[featuredArticle.data.type]}</span>
+                </div>
+                <h2><a href={featuredUrl}>{featuredArticle.data.title}</a></h2>
+                <p>{featuredArticle.data.description}</p>
+                <footer class="meta">
+                  <span>{formatDate(featuredArticle.data.publishDate)}</span>
+                </footer>
+              </div>
+            </article>
           </div>
         )
       }
     </div>
   </section>
+
 
   <section class="section surface-band" aria-labelledby="categories-title">
     <div class="container">
@@ -83,7 +133,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
 <style>
   .home-hero {
     position: relative;
-    padding-top: clamp(36px, 8vw, 88px);
+    padding-top: clamp(36px, 7vw, 72px);
   }
 
   .home-hero::after {
@@ -102,11 +152,132 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
 
   .hero-grid {
     display: grid;
-    gap: clamp(28px, 6vw, 72px);
+    gap: clamp(28px, 6vw, 64px);
   }
 
   .hero-feature {
     align-self: end;
+  }
+
+  .home-hero .hero-title {
+    font-size: clamp(2.2rem, 9vw, 6.15rem);
+    line-height: 0.92;
+  }
+
+  .home-hero .hero-title span {
+    display: block;
+  }
+
+  .home-hero .hero-title span:nth-child(2) {
+    white-space: nowrap;
+  }
+
+
+  .hero-card {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    border: 2px solid var(--ink);
+    border-radius: 18px 12px 20px 14px / 14px 20px 12px 18px;
+    padding: 16px;
+    background: var(--paper);
+    box-shadow: 7px 7px 0 var(--shadow);
+    transform: rotate(0.6deg);
+    transition:
+      box-shadow 180ms var(--ease-out),
+      transform 180ms var(--ease-out);
+  }
+
+  .hero-card:hover,
+  .hero-card:focus-within {
+    box-shadow: 9px 9px 0 var(--shadow);
+    transform: rotate(0deg) translate(-1px, -1px);
+  }
+
+  .hero-card::before {
+    content: "";
+    position: absolute;
+    top: -11px;
+    left: 24px;
+    width: 76px;
+    height: 19px;
+    border: 1px solid color-mix(in oklch, var(--ink) 30%, transparent);
+    background: color-mix(in oklch, var(--marker) 40%, var(--paper));
+    transform: rotate(-2deg);
+  }
+
+  .hero-card-visual {
+    display: grid;
+    min-height: clamp(160px, 28vw, 240px);
+    place-items: end start;
+    overflow: hidden;
+    border: 2px solid var(--ink);
+    border-radius: 12px 18px 10px 16px / 16px 10px 18px 12px;
+    background:
+      linear-gradient(135deg, color-mix(in oklch, var(--marker) 24%, transparent), transparent 46%),
+      linear-gradient(150deg, color-mix(in oklch, var(--blue-pen) 13%, var(--paper)), var(--paper));
+    color: var(--ink);
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .hero-card-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-card-visual span {
+    padding: 12px;
+  }
+
+  .hero-card-body {
+    display: grid;
+    gap: 14px;
+  }
+
+  .card-topline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .hero-card h2 {
+    margin: 0;
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.7rem, 4vw, 2.45rem);
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+
+  .hero-card h2 a {
+    text-decoration: none;
+  }
+
+  .hero-card h2 a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--marker);
+    text-decoration-thickness: 0.25em;
+    text-underline-offset: -0.12em;
+    text-decoration-skip-ink: none;
+  }
+
+  .hero-card p {
+    margin: 0;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .hero-card footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
   }
 
   .scribble-note {
@@ -122,7 +293,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
 
   .surface-band {
     background:
-      linear-gradient(135deg, color-mix(in oklch, var(--marker) 40%, transparent), transparent 42%),
+      linear-gradient(135deg, color-mix(in oklch, var(--marker) 18%, transparent), transparent 42%),
       var(--surface);
     border-block: 2px solid var(--ink);
   }
@@ -179,17 +350,27 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
     box-shadow: 4px 4px 0 var(--shadow);
     text-decoration: none;
     transform: rotate(-0.5deg);
+    transition:
+      box-shadow 180ms var(--ease-out),
+      transform 180ms var(--ease-out);
   }
 
   .category-link:nth-child(even) {
     transform: rotate(0.6deg);
   }
 
+  .category-link:hover,
+  .category-link:focus-visible {
+    color: var(--ink);
+    box-shadow: 6px 6px 0 var(--shadow);
+    transform: rotate(0deg) translate(-1px, -1px);
+  }
+
   .category-mark {
     position: absolute;
     right: 12px;
     top: 6px;
-    color: var(--accent);
+    color: var(--marker-dark);
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 2rem;
     font-weight: 900;
@@ -203,7 +384,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
     line-height: 1.05;
   }
 
-  .category-link span {
+  .category-link span:not(.category-mark) {
     color: var(--muted);
   }
 
@@ -217,7 +398,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
     }
 
     .hero-grid {
-      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.45fr);
+      grid-template-columns: minmax(0, 1.12fr) minmax(330px, 0.88fr);
       align-items: end;
     }
 
@@ -227,7 +408,7 @@ const latestArticles = articles.filter((article) => article.id !== featuredArtic
     }
 
     .article-grid {
-      grid-template-columns: 1.15fr 0.85fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

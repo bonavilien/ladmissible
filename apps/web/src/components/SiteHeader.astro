@@ -64,7 +64,7 @@ import { categories } from '../data/categories';
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding: 3px 2px 6px;
+    padding: 4px 2px 8px;
     color: var(--ink);
     font-size: 0.92rem;
     font-weight: 800;
@@ -73,11 +73,21 @@ import { categories } from '../data/categories';
   }
 
   .nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     border: 1px solid color-mix(in oklch, var(--ink) 55%, transparent);
     border-radius: 999px 860px 930px 780px / 780px 999px 790px 940px;
-    padding: 7px 10px;
-    background: color-mix(in oklch, var(--paper) 70%, var(--marker));
+    padding: 8px 12px;
+    background: color-mix(in oklch, var(--paper) 82%, var(--marker));
+    color: var(--marker-dark);
     text-decoration: none;
+  }
+
+  .nav a:hover {
+    border-color: var(--ink);
+    background: var(--marker);
+    color: var(--ink);
   }
 
   .nav a:nth-child(odd) {

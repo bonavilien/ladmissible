@@ -3,8 +3,8 @@ import ArticleCard from '../../components/ArticleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { categories } from '../../data/categories';
-import { getArticlesByCategory } from '../../lib/content';
-import { buildBreadcrumbJsonLd } from '../../lib/seo';
+import { getAllTags, getArticlesByCategory, getPublishedArticles } from '../../lib/content';
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
 
 export async function getStaticPaths() {
   return categories.map((category) => ({
@@ -15,17 +15,29 @@ export async function getStaticPaths() {
 
 const { category } = Astro.props;
 const articles = await getArticlesByCategory(category.slug);
+const allArticles = await getPublishedArticles();
+const categoryTags = getAllTags(articles).slice(0, 10);
+const siblingCategories = categories.filter((item) => item.slug !== category.slug);
 const breadcrumbs = [
   { name: 'Accueil', path: '/' },
+  { name: 'Articles', path: '/articles/' },
   { name: category.name, path: `/categories/${category.slug}/` },
 ];
+const pagePath = `/categories/${category.slug}/`;
 ---
 
 <BaseLayout
-  title={category.name}
-  description={category.description}
-  path={`/categories/${category.slug}/`}
-  jsonLd={[buildBreadcrumbJsonLd(breadcrumbs)]}
+  title={category.seoTitle}
+  description={category.seoDescription}
+  path={pagePath}
+  jsonLd={[
+    buildCollectionPageJsonLd({
+      title: category.seoTitle,
+      description: category.seoDescription,
+      path: pagePath,
+    }),
+    buildBreadcrumbJsonLd(breadcrumbs),
+  ]}
 >
   <section class="section">
     <div class="container">
@@ -33,8 +45,36 @@ const breadcrumbs = [
       <header class="category-header">
         <p class="eyebrow">Dossier de redaction</p>
         <h1 class="page-title">{category.name}</h1>
-        <p class="lede">{category.description}</p>
+        <p class="lede">{category.intro}</p>
       </header>
+      <nav class="filter-panel" aria-label="Filtres de rubrique">
+        <div>
+          <p class="filter-label">Rubriques</p>
+          <div class="filter-list">
+            <a class="category-tag active" href={`/categories/${category.slug}/`} aria-current="page">
+              {category.name}
+            </a>
+            {siblingCategories.map((item) => (
+              <a class="category-tag" href={`/categories/${item.slug}/`}>{item.name}</a>
+            ))}
+          </div>
+        </div>
+        {
+          categoryTags.length > 0 && (
+            <div>
+              <p class="filter-label">Tags de cette rubrique</p>
+              <div class="filter-list">
+                {categoryTags.map((tag) => (
+                  <a class="tag-link" href={`/tags/${tag.slug}/`}>
+                    #{tag.name}
+                    <span>{tag.count}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </nav>
       {
         articles.length > 0 ? (
           <div class="grid article-grid">
@@ -44,6 +84,13 @@ const breadcrumbs = [
           <p class="empty">Rien a lire ici pour l'instant. Le silence, mais version SEO propre.</p>
         )
       }
+      <aside class="internal-links" aria-labelledby="internal-links-title">
+        <h2 id="internal-links-title">Continuer le tri</h2>
+        <div class="filter-list">
+          <a class="button-secondary" href="/articles/">Tous les articles</a>
+          {allArticles.length > articles.length && <a class="button-secondary" href="/tags/">Tous les tags</a>}
+        </div>
+      </aside>
     </div>
   </section>
 </BaseLayout>
@@ -56,7 +103,7 @@ const breadcrumbs = [
     border-radius: 22px 14px 18px 16px / 14px 20px 12px 22px;
     padding: clamp(18px, 4vw, 34px);
     background:
-      linear-gradient(105deg, transparent 0 58%, color-mix(in oklch, var(--marker) 52%, transparent) 58% 100%),
+      linear-gradient(105deg, transparent 0 58%, color-mix(in oklch, var(--marker) 22%, transparent) 58% 100%),
       var(--paper);
     box-shadow: 7px 7px 0 var(--shadow);
     transform: rotate(-0.3deg);
@@ -79,5 +126,63 @@ const breadcrumbs = [
   .empty {
     max-width: 680px;
     color: var(--muted);
+  }
+
+  .filter-panel,
+  .internal-links {
+    display: grid;
+    gap: 16px;
+    margin-bottom: clamp(24px, 5vw, 42px);
+  }
+
+  .filter-label {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .category-tag.active {
+    background: var(--marker);
+    color: var(--ink);
+  }
+
+  .tag-link {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    border: 1px dashed var(--blue-pen);
+    border-radius: var(--radius-pill);
+    padding: 5px 10px;
+    color: var(--blue-pen);
+    font-size: 0.9rem;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .tag-link span {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .internal-links {
+    max-width: 760px;
+    margin-top: clamp(28px, 6vw, 56px);
+    margin-bottom: 0;
+  }
+
+  .internal-links h2 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    line-height: 1.05;
   }
 </style>

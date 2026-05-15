@@ -1,6 +1,6 @@
 import type { Article } from './content';
 import { absoluteUrl, site } from './site';
-import { getArticleSlug } from './content';
+import { getArticleCategory, getArticleSlug, getArticleWordCount, getReadingTimeMinutes } from './content';
 
 type SeoInput = {
   title: string;
@@ -33,12 +33,22 @@ export function buildSeo({
 export function buildArticleJsonLd(article: Article) {
   const articleUrl = absoluteUrl(`/articles/${getArticleSlug(article)}/`);
   const isNews = article.data.type === 'news';
+  const category = getArticleCategory(article);
+  const readingTime = getReadingTimeMinutes(article);
 
   return {
     '@context': 'https://schema.org',
     '@type': isNews ? 'NewsArticle' : 'Article',
+    '@id': `${articleUrl}#article`,
+    url: articleUrl,
     headline: article.data.title,
     description: article.data.description,
+    inLanguage: 'fr-FR',
+    articleSection: category?.name,
+    keywords: article.data.tags,
+    wordCount: getArticleWordCount(article),
+    timeRequired: `PT${readingTime}M`,
+    isAccessibleForFree: true,
     datePublished: article.data.publishDate.toISOString(),
     dateModified: (article.data.updatedDate ?? article.data.publishDate).toISOString(),
     author: {
@@ -68,5 +78,28 @@ export function buildBreadcrumbJsonLd(items: Array<{ name: string; path: string 
       name: item.name,
       item: absoluteUrl(item.path),
     })),
+  };
+}
+
+export function buildCollectionPageJsonLd({
+  title,
+  description,
+  path,
+}: {
+  title: string;
+  description: string;
+  path: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    url: absoluteUrl(path),
+    isPartOf: {
+      '@type': 'WebSite',
+      name: site.name,
+      url: site.url,
+    },
   };
 }

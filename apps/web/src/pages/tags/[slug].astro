@@ -1,0 +1,99 @@
+---
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categories } from '../../data/categories';
+import { getAllTags, getArticlesByTag, getPublishedArticles } from '../../lib/content';
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const articles = await getPublishedArticles();
+
+  return getAllTags(articles).map((tag) => ({
+    params: { slug: tag.slug },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const articles = await getPublishedArticles();
+const tagArticles = getArticlesByTag(tag.slug, articles);
+const relatedCategories = categories.filter((category) =>
+  tagArticles.some((article) => article.data.category === category.slug),
+);
+const breadcrumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Tags', path: '/tags/' },
+  { name: `#${tag.name}`, path: `/tags/${tag.slug}/` },
+];
+const pagePath = `/tags/${tag.slug}/`;
+const description = `Articles de L'Admissible autour du tag ${tag.name}: guides, analyses et actualites pour comprendre les ecoles de commerce sans brouillard.`;
+---
+
+<BaseLayout
+  title={`#${tag.name}`}
+  description={description}
+  path={pagePath}
+  jsonLd={[
+    buildCollectionPageJsonLd({
+      title: `#${tag.name}`,
+      description,
+      path: pagePath,
+    }),
+    buildBreadcrumbJsonLd(breadcrumbs),
+  ]}
+>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs items={breadcrumbs} />
+      <header class="tag-header">
+        <p class="eyebrow">Tag</p>
+        <h1 class="page-title">#{tag.name}</h1>
+        <p class="lede">
+          {tag.count} article{tag.count > 1 ? 's' : ''} pour suivre ce sujet sans cliquer dans le vide.
+        </p>
+      </header>
+      {
+        relatedCategories.length > 0 && (
+          <nav class="filter-panel" aria-label="Categories liees">
+            <p class="filter-label">Categories liees</p>
+            <div class="filter-list">
+              {relatedCategories.map((category) => (
+                <a class="category-tag" href={`/categories/${category.slug}/`}>{category.name}</a>
+              ))}
+            </div>
+          </nav>
+        )
+      }
+      <div class="grid article-grid">
+        {tagArticles.map((article) => <ArticleCard article={article} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-header {
+    margin: 28px 0 clamp(28px, 6vw, 56px);
+  }
+
+  .filter-panel {
+    display: grid;
+    gap: 8px;
+    margin-bottom: clamp(24px, 5vw, 42px);
+  }
+
+  .filter-label {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>

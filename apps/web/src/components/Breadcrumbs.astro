@@ -36,4 +36,15 @@ const { items } = Astro.props;
     margin-left: 6px;
     color: var(--line);
   }
+
+  @media (max-width: 640px) {
+    li:last-child {
+      display: none;
+    }
+
+    li:nth-last-child(2)::after {
+      content: "";
+      margin-left: 0;
+    }
+  }
 </style>

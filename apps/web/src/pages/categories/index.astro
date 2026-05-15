@@ -1,0 +1,106 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { categories } from '../../data/categories';
+import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+
+const breadcrumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Categories', path: '/categories/' },
+];
+---
+
+<BaseLayout
+  title="Categories"
+  description="Toutes les rubriques de L'Admissible: admissions, classements, Parcoursup, concours, vie etudiante, ecoles et guides."
+  path="/categories/"
+  jsonLd={[
+    buildCollectionPageJsonLd({
+      title: 'Categories',
+      description: "Toutes les rubriques de L'Admissible pour lire les ecoles de commerce sans avaler la brochure.",
+      path: '/categories/',
+    }),
+    buildBreadcrumbJsonLd(breadcrumbs),
+  ]}
+>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs items={breadcrumbs} />
+      <header class="categories-header">
+        <p class="eyebrow">Rubriques</p>
+        <h1 class="page-title">Les grands tiroirs, mais etiquetes.</h1>
+        <p class="lede">
+          Sept entrees pour suivre les admissions, les concours, Parcoursup et les ecoles sans se perdre dans la moquette institutionnelle.
+        </p>
+      </header>
+      <div class="categories-grid">
+        {categories.map((category) => (
+          <article class="category-card">
+            <a href={`/categories/${category.slug}/`}>
+              <span>{category.name}</span>
+              <p>{category.description}</p>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .categories-header {
+    margin: 28px 0 clamp(28px, 6vw, 56px);
+  }
+
+  .categories-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .category-card a {
+    display: grid;
+    gap: 8px;
+    height: 100%;
+    border: var(--border-hand);
+    border-radius: var(--radius-paper);
+    padding: clamp(18px, 4vw, 26px);
+    background: var(--paper);
+    box-shadow: var(--shadow-paper);
+    color: var(--text);
+    text-decoration: none;
+    transform: rotate(-0.25deg);
+  }
+
+  .category-card:nth-child(even) a {
+    transform: rotate(0.25deg);
+  }
+
+  .category-card a:hover {
+    background: color-mix(in oklch, var(--marker) 18%, var(--paper));
+  }
+
+  .category-card span {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 4vw, 2rem);
+    font-weight: 900;
+    line-height: 1.05;
+  }
+
+  .category-card p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  @media (min-width: 760px) {
+    .categories-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1040px) {
+    .categories-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

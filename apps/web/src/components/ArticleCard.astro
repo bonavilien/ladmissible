@@ -16,12 +16,12 @@ const typeLabels = {
 };
 ---
 
-<article class:list={['article-card', { featured }]}>
+<article class:list={['article-card', 'article-card-shell', { featured }]}>
   <div class="card-topline">
-    {category && <a class="card-category" href={`/categories/${category.slug}/`}>{category.name}</a>}
+    {category && <a class="category-tag" href={`/categories/${category.slug}/`}>{category.name}</a>}
     <span>{typeLabels[article.data.type]}</span>
   </div>
-  <h2><a href={getArticleUrl(article)}>{article.data.title}</a></h2>
+  <h2 class="card-title"><a href={getArticleUrl(article)}>{article.data.title}</a></h2>
   <p>{article.data.description}</p>
   <footer class="meta">
     <span>{formatDate(article.data.publishDate)}</span>
@@ -30,41 +30,19 @@ const typeLabels = {
 
 <style>
   .article-card {
-    position: relative;
-    display: grid;
-    align-content: start;
-    gap: 14px;
-    min-height: 100%;
-    border: 2px solid var(--ink);
-    border-radius: 18px 12px 20px 14px / 14px 20px 12px 18px;
-    padding: 16px;
-    background: var(--paper);
-    box-shadow: 5px 5px 0 var(--shadow);
     transform: rotate(-0.4deg);
   }
 
   .article-card.featured {
     background:
-      linear-gradient(110deg, transparent 0 68%, color-mix(in oklch, var(--marker) 70%, transparent) 68% 100%),
+      linear-gradient(110deg, transparent 0 68%, color-mix(in oklch, var(--marker) 28%, transparent) 68% 100%),
       var(--paper);
-    box-shadow: 7px 7px 0 var(--accent);
+    box-shadow: var(--shadow-paper-strong);
     transform: rotate(0.8deg);
   }
 
   .article-card:nth-child(3n) {
     transform: rotate(0.5deg);
-  }
-
-  .article-card::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 22px;
-    width: 68px;
-    height: 18px;
-    border: 1px solid color-mix(in oklch, var(--ink) 30%, transparent);
-    background: color-mix(in oklch, var(--marker) 65%, var(--paper));
-    transform: rotate(-3deg);
   }
 
   .card-topline {
@@ -78,25 +56,16 @@ const typeLabels = {
     font-weight: 800;
   }
 
-  .card-category {
-    width: fit-content;
-    color: var(--accent-dark);
-    font-size: 0.85rem;
-    font-weight: 800;
-    text-decoration: none;
-  }
-
-  h2 {
-    margin: 0;
-    color: var(--ink);
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    line-height: 1.02;
-    text-wrap: balance;
-  }
-
   h2 a {
     text-decoration: none;
+  }
+
+  h2 a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--marker);
+    text-decoration-thickness: 0.25em;
+    text-underline-offset: -0.12em;
+    text-decoration-skip-ink: none;
   }
 
   p {
