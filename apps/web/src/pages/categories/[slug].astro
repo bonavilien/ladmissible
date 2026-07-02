@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { categories } from '../../data/categories';
 import { getAllTags, getArticlesByCategory, getPublishedArticles } from '../../lib/content';
 import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+import { withBase } from '../../lib/site';
 
 export async function getStaticPaths() {
   return categories.map((category) => ({
@@ -51,11 +52,11 @@ const pagePath = `/categories/${category.slug}/`;
         <div>
           <p class="filter-label">Rubriques</p>
           <div class="filter-list">
-            <a class="category-tag active" href={`/categories/${category.slug}/`} aria-current="page">
+            <a class="category-tag active" href={withBase(`/categories/${category.slug}/`)} aria-current="page">
               {category.name}
             </a>
             {siblingCategories.map((item) => (
-              <a class="category-tag" href={`/categories/${item.slug}/`}>{item.name}</a>
+              <a class="category-tag" href={withBase(`/categories/${item.slug}/`)}>{item.name}</a>
             ))}
           </div>
         </div>
@@ -65,7 +66,7 @@ const pagePath = `/categories/${category.slug}/`;
               <p class="filter-label">Tags de cette rubrique</p>
               <div class="filter-list">
                 {categoryTags.map((tag) => (
-                  <a class="tag-link" href={`/tags/${tag.slug}/`}>
+                  <a class="tag-link" href={withBase(`/tags/${tag.slug}/`)}>
                     #{tag.name}
                     <span>{tag.count}</span>
                   </a>
@@ -87,8 +88,8 @@ const pagePath = `/categories/${category.slug}/`;
       <aside class="internal-links" aria-labelledby="internal-links-title">
         <h2 id="internal-links-title">Continuer le tri</h2>
         <div class="filter-list">
-          <a class="button-secondary" href="/articles/">Tous les articles</a>
-          {allArticles.length > articles.length && <a class="button-secondary" href="/tags/">Tous les tags</a>}
+          <a class="button-secondary" href={withBase("/articles/")}>Tous les articles</a>
+          {allArticles.length > articles.length && <a class="button-secondary" href={withBase("/tags/")}>Tous les tags</a>}
         </div>
       </aside>
     </div>

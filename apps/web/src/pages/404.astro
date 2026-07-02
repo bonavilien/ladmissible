@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/site';
 ---
 
 <BaseLayout
@@ -14,7 +15,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="lede">
         L'adresse ne mene a rien. Retournez aux articles, c'est plus utile qu'attendre devant une porte fermee.
       </p>
-      <a class="button-link" href="/articles/">Voir les articles</a>
+      <a class="button-link" href={withBase("/articles/")}>Voir les articles</a>
     </div>
   </section>
 </BaseLayout>

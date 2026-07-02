@@ -1,18 +1,19 @@
 ---
 import { categories } from '../data/categories';
+import { withBase } from '../lib/site';
 ---
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="Accueil L'Admissible">
+    <a class="brand" href={withBase("/")} aria-label="Accueil L'Admissible">
       <span>L'Admissible</span>
     </a>
     <nav class="nav" aria-label="Navigation principale">
-      <a href="/articles/">Articles</a>
+      <a href={withBase("/articles/")}>Articles</a>
       {categories.map((category) => (
-        <a href={`/categories/${category.slug}/`}>{category.name}</a>
+        <a href={withBase(`/categories/${category.slug}/`)}>{category.name}</a>
       ))}
-      <a href="/a-propos/">A propos</a>
+      <a href={withBase("/a-propos/")}>A propos</a>
     </nav>
   </div>
 </header>

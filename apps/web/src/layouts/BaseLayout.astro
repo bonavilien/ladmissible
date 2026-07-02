@@ -3,7 +3,7 @@ import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { buildSeo } from '../lib/seo';
-import { site } from '../lib/site';
+import { site, withBase } from '../lib/site';
 
 type Props = {
   title: string;
@@ -32,8 +32,8 @@ const seo = buildSeo({ title, description, path, image, type });
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
+    <link rel="icon" href={withBase("/favicon.ico")} />
     <title>{seo.title}</title>
     <meta name="description" content={seo.description} />
     <link rel="canonical" href={seo.canonical} />

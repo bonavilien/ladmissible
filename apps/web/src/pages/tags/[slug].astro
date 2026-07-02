@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { categories } from '../../data/categories';
 import { getAllTags, getArticlesByTag, getPublishedArticles } from '../../lib/content';
 import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+import { withBase } from '../../lib/site';
 
 export async function getStaticPaths() {
   const articles = await getPublishedArticles();
@@ -59,7 +60,7 @@ const description = `Articles de L'Admissible autour du tag ${tag.name}: guides,
             <p class="filter-label">Categories liees</p>
             <div class="filter-list">
               {relatedCategories.map((category) => (
-                <a class="category-tag" href={`/categories/${category.slug}/`}>{category.name}</a>
+                <a class="category-tag" href={withBase(`/categories/${category.slug}/`)}>{category.name}</a>
               ))}
             </div>
           </nav>

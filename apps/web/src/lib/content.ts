@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { getCategory } from '../data/categories';
+import { withBase } from './site';
 
 export type Article = CollectionEntry<'articles'>;
 
@@ -8,11 +9,11 @@ export function getArticleSlug(article: Article) {
 }
 
 export function getArticleUrl(article: Article) {
-  return `/articles/${getArticleSlug(article)}/`;
+  return withBase(`/articles/${getArticleSlug(article)}/`);
 }
 
 export function getCategoryUrl(slug: string) {
-  return `/categories/${slug}/`;
+  return withBase(`/categories/${slug}/`);
 }
 
 export function getTagSlug(tag: string) {
@@ -26,7 +27,7 @@ export function getTagSlug(tag: string) {
 }
 
 export function getTagUrl(tag: string) {
-  return `/tags/${getTagSlug(tag)}/`;
+  return withBase(`/tags/${getTagSlug(tag)}/`);
 }
 
 export async function getPublishedArticles() {

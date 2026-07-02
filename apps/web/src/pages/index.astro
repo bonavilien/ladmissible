@@ -10,7 +10,7 @@ import {
   getFeaturedArticle,
   getPublishedArticles,
 } from '../lib/content';
-import { site } from '../lib/site';
+import { site, withBase } from '../lib/site';
 
 const articles = await getPublishedArticles();
 const featuredArticle = await getFeaturedArticle();
@@ -65,7 +65,7 @@ const typeLabels = {
                 <div class="card-topline">
                   {
                     featuredCategory && (
-                      <a class="category-tag" href={`/categories/${featuredCategory.slug}/`}>
+                      <a class="category-tag" href={withBase(`/categories/${featuredCategory.slug}/`)}>
                         {featuredCategory.name}
                       </a>
                     )
@@ -94,7 +94,7 @@ const typeLabels = {
       </div>
       <div class="category-grid">
         {categories.map((category) => (
-          <a class="category-link" href={`/categories/${category.slug}/`}>
+          <a class="category-link" href={withBase(`/categories/${category.slug}/`)}>
             <span class="category-mark" aria-hidden="true">#</span>
             <strong>{category.name}</strong>
             <span>{category.description}</span>
@@ -111,7 +111,7 @@ const typeLabels = {
           <h2 id="latest-title">Derniers articles</h2>
           <p>Du concret, du lisible, et juste assez de recul pour ne pas applaudir une annonce par reflexe.</p>
         </div>
-        <a class="button-link" href="/articles/">Tous les articles</a>
+        <a class="button-link" href={withBase("/articles/")}>Tous les articles</a>
       </div>
       <div class="grid article-grid">
         {latestArticles.map((article) => <ArticleCard article={article} />)}

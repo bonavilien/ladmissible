@@ -3,6 +3,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllTags, getPublishedArticles } from '../../lib/content';
 import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+import { withBase } from '../../lib/site';
 
 const articles = await getPublishedArticles();
 const tags = getAllTags(articles);
@@ -38,7 +39,7 @@ const breadcrumbs = [
       </header>
       <div class="tag-cloud" aria-label="Tous les tags">
         {tags.map((tag) => (
-          <a class="tag-link" href={`/tags/${tag.slug}/`}>
+          <a class="tag-link" href={withBase(`/tags/${tag.slug}/`)}>
             #{tag.name}
             <span>{tag.count}</span>
           </a>

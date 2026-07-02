@@ -3,6 +3,7 @@ import ArticleCard from '../../components/ArticleCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { categories } from '../../data/categories';
 import { getAllTags, getPublishedArticles } from '../../lib/content';
+import { withBase } from '../../lib/site';
 
 const articles = await getPublishedArticles();
 const tags = getAllTags(articles).slice(0, 12);
@@ -27,7 +28,7 @@ const tags = getAllTags(articles).slice(0, 12);
           <p class="filter-label">Categories</p>
           <div class="filter-list">
             {categories.map((category) => (
-              <a class="category-tag" href={`/categories/${category.slug}/`}>{category.name}</a>
+              <a class="category-tag" href={withBase(`/categories/${category.slug}/`)}>{category.name}</a>
             ))}
           </div>
         </div>
@@ -37,12 +38,12 @@ const tags = getAllTags(articles).slice(0, 12);
               <p class="filter-label">Tags frequents</p>
               <div class="filter-list">
                 {tags.map((tag) => (
-                  <a class="tag-link" href={`/tags/${tag.slug}/`}>
+                  <a class="tag-link" href={withBase(`/tags/${tag.slug}/`)}>
                     #{tag.name}
                     <span>{tag.count}</span>
                   </a>
                 ))}
-                <a class="button-secondary" href="/tags/">Tous les tags</a>
+                <a class="button-secondary" href={withBase("/tags/")}>Tous les tags</a>
               </div>
             </div>
           )

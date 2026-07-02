@@ -1,6 +1,6 @@
 ---
 import { categories } from '../data/categories';
-import { site } from '../lib/site';
+import { site, withBase } from '../lib/site';
 ---
 
 <footer class="site-footer">
@@ -12,12 +12,12 @@ import { site } from '../lib/site';
       </p>
     </div>
     <nav class="footer-nav" aria-label="Navigation secondaire">
-      <a href="/articles/">Articles</a>
-      <a href="/categories/">Categories</a>
-      <a href="/tags/">Tags</a>
-      <a href="/a-propos/">A propos</a>
+      <a href={withBase("/articles/")}>Articles</a>
+      <a href={withBase("/categories/")}>Categories</a>
+      <a href={withBase("/tags/")}>Tags</a>
+      <a href={withBase("/a-propos/")}>A propos</a>
       {categories.map((category) => (
-        <a href={`/categories/${category.slug}/`}>{category.name}</a>
+        <a href={withBase(`/categories/${category.slug}/`)}>{category.name}</a>
       ))}
     </nav>
   </div>

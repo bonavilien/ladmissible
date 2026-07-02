@@ -3,6 +3,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { categories } from '../../data/categories';
 import { buildBreadcrumbJsonLd, buildCollectionPageJsonLd } from '../../lib/seo';
+import { withBase } from '../../lib/site';
 
 const breadcrumbs = [
   { name: 'Accueil', path: '/' },
@@ -36,7 +37,7 @@ const breadcrumbs = [
       <div class="categories-grid">
         {categories.map((category) => (
           <article class="category-card">
-            <a href={`/categories/${category.slug}/`}>
+            <a href={withBase(`/categories/${category.slug}/`)}>
               <span>{category.name}</span>
               <p>{category.description}</p>
             </a>
